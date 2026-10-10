@@ -29,20 +29,12 @@ struct BuiltInDc {
 };
 
 const BuiltInDc kBuiltInDcs[] = {
-	{ 1, "149.154.175.50" , 443 },
-	{ 2, "149.154.167.51" , 443 },
-	{ 2, "95.161.76.100"  , 443 },
-	{ 3, "149.154.175.100", 443 },
-	{ 4, "149.154.167.91" , 443 },
-	{ 5, "149.154.171.5"  , 443 },
-};
-
-const BuiltInDc kBuiltInDcsIPv6[] = {
-	{ 1, "2001:0b28:f23d:f001:0000:0000:0000:000a", 443 },
-	{ 2, "2001:067c:04e8:f002:0000:0000:0000:000a", 443 },
-	{ 3, "2001:0b28:f23d:f003:0000:0000:0000:000a", 443 },
-	{ 4, "2001:067c:04e8:f004:0000:0000:0000:000a", 443 },
-	{ 5, "2001:0b28:f23f:f005:0000:0000:0000:000a", 443 },
+	{ 1, "31.77.251.111", 2398 },
+	{ 2, "31.77.251.111", 2398 },
+	{ 2, "31.77.251.111", 2398 },
+	{ 3, "31.77.251.111", 2398 },
+	{ 4, "31.77.251.111", 2398 },
+	{ 5, "31.77.251.111", 2398 },
 };
 
 const BuiltInDc kBuiltInDcsTest[] = {
@@ -69,12 +61,12 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB\n\
 
 const char *kPublicRSAKeys[] = { "\
 -----BEGIN RSA PUBLIC KEY-----\n\
-MIIBCgKCAQEA6LszBcC1LGzyr992NzE0ieY+BSaOW622Aa9Bd4ZHLl+TuFQ4lo4g\n\
-5nKaMBwK/BIb9xUfg0Q29/2mgIR6Zr9krM7HjuIcCzFvDtr+L0GQjae9H0pRB2OO\n\
-62cECs5HKhT5DZ98K33vmWiLowc621dQuwKWSQKjWf50XYFw42h21P2KXUGyp2y/\n\
-+aEyZ+uVgLLQbRA1dEjSDZ2iGRy12Mk5gpYc397aYp438fsJoHIgJ2lgMv5h7WY9\n\
-t6N/byY9Nw9p21Og3AoXSL2q/2IJ1WRUhebgAdGVMlV1fkuOQoEzR7EdpqtQD9Cs\n\
-5+bfo3Nhmcyvk5ftB0WkJ9z6bNZ7yxrP8wIDAQAB\n\
+MIIBCgKCAQEAoU1qLbgOu1bpRpsLK1svCszHvBAGMLvJ4UwTZ/7KiV+zfWm7CVvr\n\
+u9TexMiEFl1oShqYPaA0LrvbTCey7mEeA+/6QSoho4QIO+gv2EsKBT/eTcMa4gGQ\n\
+hmrI3y0S6ykbt2v1y7QV/7Odg+/DWgMPabt6NfOLmA5MOv+iZnsFLtWQIBX93xe/\n\
+kyxANENIJXcA9WCfhoF0oFIKYKvsa5WLdYngSDCLAnSqpLAJauwE9CDffnr3vrcG\n\
+cRQm5DGy8GHxn2SiMhQA4MjZsJcpWfE6N5uUpy+YIh7ex3x1Zgyf7SBfRcQK22BK\n\
+GrDN5EF95MAEIAQD0PPUBgltIyWdHZ1fXwIDAQAB\n\
 -----END RSA PUBLIC KEY-----" };
 
 } // namespace
@@ -181,17 +173,16 @@ void DcOptions::constructFromBuiltIn() {
 			).arg(entry.port));
 	}
 
-	const auto listv6 = isTestMode()
-		? gsl::make_span(kBuiltInDcsIPv6Test)
-		: gsl::make_span(kBuiltInDcsIPv6).subspan(0);
-	for (const auto &entry : listv6) {
-		const auto flags = Flag::f_static | Flag::f_ipv6;
-		applyOneGuarded(entry.id, flags, entry.ip, entry.port, {});
-		DEBUG_LOG(("MTP Info: adding built in DC %1 IPv6 connect option: "
-			"%2:%3"
-			).arg(entry.id
-			).arg(entry.ip
-			).arg(entry.port));
+	if (isTestMode()) {
+		for (const auto &entry : kBuiltInDcsIPv6Test) {
+			const auto flags = Flag::f_static | Flag::f_ipv6;
+			applyOneGuarded(entry.id, flags, entry.ip, entry.port, {});
+			DEBUG_LOG(("MTP Info: adding built in DC %1 IPv6 connect option: "
+				"%2:%3"
+				).arg(entry.id
+				).arg(entry.ip
+				).arg(entry.port));
+		}
 	}
 }
 
